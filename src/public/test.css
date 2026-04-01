@@ -1,0 +1,98 @@
+:root {
+  --bg: #f7f7f8;
+  --card: #ffffff;
+  --text: #16181d;
+  --muted: #6b7280;
+  --line: #e5e7eb;
+  --accent: #111827;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  padding: 24px;
+}
+
+.principal {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.cartao {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 12px;
+}
+
+h1 {
+  font-size: 20px;
+  margin: 0 0 6px;
+}
+
+p {
+  margin: 0;
+  color: var(--muted);
+}
+
+.linha {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 12px;
+}
+
+input, textarea, button, select {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 10px 12px;
+  font: inherit;
+}
+
+input, textarea {
+  width: 100%;
+  background: #fff;
+  color: var(--text);
+}
+
+textarea {
+  min-height: 130px;
+  resize: vertical;
+}
+
+button {
+  background: var(--accent);
+  color: #fff;
+  cursor: pointer;
+  border: none;
+}
+
+button.outrobotao {
+  background: #fff;
+  color: var(--text);
+  border: 1px solid var(--line);
+}
+
+pre {
+  margin: 0;
+  white-space: pre-wrap;
+  word-break: break-word;
+  background: #0f172a;
+  color: #e2e8f0;
+  border-radius: 8px;
+  padding: 12px;
+  min-height: 180px;
+  overflow: auto;
+}
+
+.label {
+  font-size: 13px;
+  color: var(--muted);
+  margin-bottom: 6px;
+  display: block;
+}

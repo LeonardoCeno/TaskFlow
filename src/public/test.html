@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Teste aura</title>
+  <link rel="stylesheet" href="/test.css">
+</head>
+<body>
+  <main class="principal">
+    <section class="cartao">
+      <h1>Teste aura</h1>
+      <p>Pagina simples pra teste.</p>
+      <div class="linha">
+        <input id="baseUrl" value="http://127.0.0.1:8000/api" aria-label="Base URL">
+      </div>
+    </section>
+
+    <section class="cartao">
+      <span class="label">Ações rápidas</span>
+      <div class="linha">
+        <button onclick="callApi('GET', '/projects')">GET /projects</button>
+        <button onclick="callApi('GET', '/tags')">GET /tags</button>
+        <button onclick="callApi('GET', '/users/1/profile')">GET /users/1/profile</button>
+      </div>
+    </section>
+
+    <section class="cartao">
+      <span class="label">Requisição personalizada</span>
+      <div class="linha">
+        <select id="method" aria-label="Metodo HTTP">
+          <option>GET</option>
+          <option>POST</option>
+          <option>PUT</option>
+          <option>PATCH</option>
+          <option>DELETE</option>
+        </select>
+        <input id="endpoint" value="/projects" aria-label="Endpoint">
+        <button onclick="sendCustom()">Enviar</button>
+        <button class="outrobotao" onclick="fillProjectExample()">Exemplo POST projeto</button>
+      </div>
+      <div class="linha">
+        <textarea id="body" aria-label="JSON body">{
+  "user_id": 1,
+  "name": "Projeto HTML",
+  "status": "open"
+}</textarea>
+      </div>
+    </section>
+
+    <section class="cartao">
+      <span class="label">Resposta</span>
+      <pre id="result">Aguardando requisicao...</pre>
+    </section>
+  </main>
+
+  <script>
+    function getUrl(path) {
+      const base = document.getElementById('baseUrl').value.trim().replace(/\/$/, '');
+      const endpoint = path.startsWith('/') ? path : '/' + path;
+      return base + endpoint;
+    }
+
+    function setResult(title, data) {
+      const output = typeof data === 'string' ? data : JSON.stringify(data, null, 2);
+      document.getElementById('result').textContent = title + '\n\n' + output;
+    }
+
+    async function callApi(method, endpoint, body) {
+      const url = getUrl(endpoint);
+      const options = { method, headers: {} };
+
+      if (body && ['POST', 'PUT', 'PATCH'].includes(method)) {
+        options.headers['Content-Type'] = 'application/json';
+        options.body = JSON.stringify(body);
+      }
+
+      try {
+        const response = await fetch(url, options);
+        const text = await response.text();
+        let json;
+
+        try {
+          json = text ? JSON.parse(text) : {};
+        } catch (_) {
+          json = text;
+        }
+
+        setResult(method + ' ' + endpoint + ' -> ' + response.status, json);
+      } catch (error) {
+        setResult('Erro de rede', String(error));
+      }
+    }
+
+    function fillProjectExample() {
+      document.getElementById('method').value = 'POST';
+      document.getElementById('endpoint').value = '/projects';
+      document.getElementById('body').value = JSON.stringify({
+        user_id: 1,
+        name: 'Projeto HTML',
+        description: 'Criado via test.html',
+        status: 'open',
+        deadline: '2026-12-31'
+      }, null, 2);
+    }
+
+    function sendCustom() {
+      const method = document.getElementById('method').value;
+      const endpoint = document.getElementById('endpoint').value.trim();
+      const bodyText = document.getElementById('body').value.trim();
+      let body;
+
+      if (['POST', 'PUT', 'PATCH'].includes(method) && bodyText) {
+        try {
+          body = JSON.parse(bodyText);
+        } catch (error) {
+          setResult('JSON invalido', String(error));
+          return;
+        }
+      }
+
+      callApi(method, endpoint, body);
+    }
+  </script>
+</body>
+</html>
