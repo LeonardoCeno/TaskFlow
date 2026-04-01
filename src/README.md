@@ -123,3 +123,5 @@ A API ficara disponivel em http://127.0.0.1:8000.
 - composer install
 - php artisan migrate:fresh --seed
 - php artisan serve
+
+É isso.
