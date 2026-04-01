@@ -2,24 +2,37 @@
 
 namespace Database\Seeders;
 
+use App\Models\Tag;
+use App\Models\Project;
+use App\Models\Task;
 use App\Models\User;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
 {
-    use WithoutModelEvents;
-
-    /**
-     * Seed the application's database.
-     */
     public function run(): void
     {
-        // User::factory(10)->create();
+        $users = User::factory(10)->create();
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-        ]);
+        $users->each(function (User $user): void {
+            Project::factory(2)->create(['user_id' => $user->id])
+                ->each(function (Project $project): void {
+                    Task::factory(3)->create(['project_id' => $project->id]);
+                });
+        });
+
+        $tags = Tag::factory(8)->create();
+
+        Task::query()->get()->each(function (Task $task) use ($tags): void {
+            $amount = fake()->numberBetween(0, 3);
+
+            if ($amount === 0) {
+                return;
+            }
+
+            $tagIds = $tags->random($amount)->pluck('id')->all();
+
+            $task->tags()->syncWithoutDetaching($tagIds);
+        });
     }
 }
